@@ -8,6 +8,7 @@ type User struct {
 	Password        []byte `json:"password" validate:"required"`
 	Qualification   int    `json:"qualification"`
 	UrlPhoto        string `json:"url_photo"`
+	CodeRecuperation string `json:"code_recuperation"`
 }
 
 type ErrorResponse struct {

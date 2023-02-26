@@ -12,7 +12,7 @@ func Connect() {
 	host := "localhost"
 	user := "postgres"
 	password := "8021947cbba"
-	dbname := "realEstate"
+	dbname := "realEstatePrueba1"
 	port := "5432"
 
 	DSN := "host=" + host + " user=" + user + " password=" + password + " dbname=" + dbname + " port=" + port

@@ -24,7 +24,7 @@ func GenerateJwt(user models.User, timeExp time.Time) (string, error) {
 
 func ValidateJwt(c *fiber.Ctx) error {
 	/* 	cookie := c.Cookies("jwt") */
-	cookie := c.Get("Token")
+	cookie := c.Get("authorization")
 	token, err := jwt.Parse(cookie, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unauthenticated")
