@@ -3,7 +3,6 @@ package controllers
 import (
 	"fmt"
 	"time"
-
 	"github.com/JosseMontano/estateInTheCloud/database"
 	"github.com/JosseMontano/estateInTheCloud/middleware"
 	"github.com/JosseMontano/estateInTheCloud/models"
@@ -222,4 +221,41 @@ func SendCodeToGmail(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"operation": true,
 	})
+}
+
+func ChangePassword(c *fiber.Ctx) error {
+	var data map[string]string
+
+	if err := c.BodyParser(&data); err != nil {
+		return err
+	}
+
+	user := models.User{}
+
+	database.DB.
+		Where("email = ?", data["email"]).Where("code_recuperation = ?", data["code_recuperation"]).
+		First(&user)
+
+	if user.Id == 0 {
+		c.Status(404)
+		return c.JSON(fiber.Map{
+			"message": "the code of the email is incorrect",
+		})
+	}
+
+	password, _ := bcrypt.GenerateFromPassword([]byte(data["password"]), 14)
+
+	newUser := models.User{
+		Password: password,
+	}
+
+	database.DB.Model(&newUser).
+		Where("id = ?", user.Id).
+		Update("password", password)
+
+	c.Status(200)
+	return c.JSON(fiber.Map{
+		"operation": true,
+	})
+
 }

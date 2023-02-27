@@ -26,7 +26,7 @@ func Connect() {
 	DB = database
 
 	database.AutoMigrate(models.User{})
-	database.AutoMigrate(models.TypeRealState{})
+	database.AutoMigrate(models.TypeRealEstate{})
 	database.AutoMigrate(models.Photo{})
 	database.AutoMigrate(models.RealEstate{})
 }

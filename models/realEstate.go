@@ -13,7 +13,7 @@ type RealEstate struct {
 	UserId           int           `json:"user_id"`
 	User             User          `json:"user" gorm:"foreignKey:UserId"`
 	TypeRealEstateId int           `json:"type_real_estate_id"`
-	TypeRealState    TypeRealState `json:"type_real_state" gorm:"foreignKey:TypeRealEstateId"`
+	TypeRealEstate    TypeRealEstate `json:"type_real_state" gorm:"foreignKey:TypeRealEstateId"`
 	Photos           []Photo       `json:"photos" gorm:"many2many:real_estates_photos"`
 }
 

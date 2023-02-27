@@ -1,6 +1,6 @@
 package models
 
-type TypeRealState struct {
+type TypeRealEstate struct {
 	Id   uint   `json:"id"`
 	Name string `json:"name"`
 }

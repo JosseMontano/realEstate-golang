@@ -25,35 +25,59 @@ func ValidateStructRE(realEstate models.RealEstate) []*models.ErrorResponseRE {
 	return errors
 }
 
+type AllREResult struct {
+	IdRealEstate      int    `json:"id_real_estate"`
+	IdRealEstatePhoto int    `json:"id_real_estate_photo"`
+	IdPhoto           int    `json:"id_photo"`
+	Url               string `json:"url"`
+	PublicId          string `json:"public_id"`
+	Title             string `json:"title"`
+	Description       string `json:"description"`
+	Email             string `json:"email"`
+	IdUser            int    `json:"id_user"`
+}
+
+const from = "from real_estates_photos rp , photos p, real_estates re, users u"
+
+const where = "where rp.photo_id = p.id and rp.real_estate_id = re.id and re.user_id = u.id"
+
+const query = ` select DISTINCT on (re.id) re.id as id_real_estate, rp.id as id_real_estate_photo,
+	p.id as id_photo, p.url, p.public_id, re.title,
+	re.description, u.email, u.id as id_user` + " " + from + " " + where + " " +
+	`and re.available=true ORDER BY re.id
+`
+
 func AllRE(c *fiber.Ctx) error {
-	var realEstate []models.RealEstate
-	database.DB.Preload("User").Preload("TypeRealState").Preload("Photos").Find(&realEstate)
+	var realEstate []AllREResult
+	database.DB.Debug().Raw(query).Scan(&realEstate)
 	return c.JSON(realEstate)
 }
 
 func MostRecentRE(c *fiber.Ctx) error {
-	var realEstate []models.RealEstate
-	database.DB.Limit(10).Preload("User").
-		Preload("TypeRealState").Preload("Photos").Order("id desc").Find(&realEstate)
+	var realEstate []AllREResult
+	database.DB.Debug().Raw(query + " " + "desc limit 8").Scan(&realEstate)
 	return c.JSON(realEstate)
 }
 
-type RealState struct {
-}
-
 func UserRecommend(c *fiber.Ctx) error {
-	var user []models.User
-
-	//this working
-	/* 	database.DB.Debug().Table("(?) as u",
-	database.DB.Debug().Joins("JOIN users on real_estates.user_id=users.id").
-		Order("users.qualification desc").Preload("User").Find(&realEstate)).
-	Distinct("user_id").Preload("User").Find(&realEstate) */
-
-	database.DB.Order("qualification desc").Find(&user)
-
-	return c.JSON(user)
+	var realEstate []AllREResult
+	database.DB.Raw(`SELECT * 
+	FROM(SELECT DISTINCT on (u.email) re.id as id_real_estate, rp.id as id_real_estate_photo,
+	p.id as id_photo,  p.url, 
+	p.public_id, re.title, re.description, u.email, u.id as id_user, u.qualification` +
+		" " + from + " " + where + " " +
+		`and re.available=true ORDER BY u.email DESC) users ORDER BY users.qualification desc`).Scan(&realEstate)
+	return c.JSON(realEstate)
 }
+
+func RealEstate(c *fiber.Ctx) error {
+	id := c.Params("id")
+	var realEstate []models.RealEstate
+	database.DB.Where("id=?", id).Preload("User").Preload("Photos").Find(&realEstate)
+	c.Status(200)
+	return c.JSON(realEstate)
+}
+
 
 func CreateRE(c *fiber.Ctx) error {
 	/* 	var realEstate models.RealEstate */
@@ -95,7 +119,7 @@ func CreateRE(c *fiber.Ctx) error {
 
 	database.DB.Create(&realEstate)
 	database.DB.Model(&realEstate).Association("User").Find(&realEstate.User)
-	database.DB.Model(&realEstate).Association("TypeRealState").Find(&realEstate.TypeRealState)
+	database.DB.Model(&realEstate).Association("TypeRealState").Find(&realEstate.TypeRealEstate)
 	database.DB.Model(&realEstate).Association("Photos").Find(&realEstate.Photos)
 	return c.JSON(realEstate)
 }
