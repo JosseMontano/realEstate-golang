@@ -29,4 +29,5 @@ func Connect() {
 	database.AutoMigrate(models.TypeRealEstate{})
 	database.AutoMigrate(models.Photo{})
 	database.AutoMigrate(models.RealEstate{})
+	database.AutoMigrate(models.Question{})
 }
