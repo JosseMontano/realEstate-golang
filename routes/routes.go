@@ -2,10 +2,10 @@ package routes
 
 import (
 	"github.com/JosseMontano/estateInTheCloud/controllers"
-	"github.com/JosseMontano/estateInTheCloud/middleware"
+
 	"github.com/gofiber/fiber/v2"
 )
-
+//	"github.com/JosseMontano/estateInTheCloud/middleware"
 func Setup(app *fiber.App) {
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World 👋!")
@@ -17,8 +17,8 @@ func Setup(app *fiber.App) {
 	app.Post("/api/signin", controllers.SingIn)
 	app.Post("/api/sendCodeGmail", controllers.SendCodeToGmail)
 	app.Post("/api/changePassword", controllers.ChangePassword)
-
-	app.Use(middleware.ValidateJwt)
+/* 
+	app.Use(middleware.ValidateJwt) */
 
 	//======================= USER =======================
 	app.Get("/api/getUserComplete/:id", controllers.GetUser)
