@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/JosseMontano/estateInTheCloud/database"
 	"github.com/JosseMontano/estateInTheCloud/routes"
 	"github.com/JosseMontano/estateInTheCloud/utils"
@@ -23,7 +25,8 @@ func main() {
 	port := utils.DotEnvVariable("PORT_SERVER")
 
 	if port == "" {
-		port ="4000"
+		port ="127.0.0.1:4000"
 	}
+	fmt.Print(port)
 	app.Listen(port)
 }
