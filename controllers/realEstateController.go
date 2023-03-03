@@ -1,10 +1,9 @@
 package controllers
 
 import (
-	"fmt"
-	"strconv"
-
+	"net/http"
 	"github.com/JosseMontano/estateInTheCloud/database"
+	"github.com/JosseMontano/estateInTheCloud/helper"
 	"github.com/JosseMontano/estateInTheCloud/models"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -88,46 +87,36 @@ func RealEstateByType(c *fiber.Ctx) error {
 }
 
 func CreateRE(c *fiber.Ctx) error {
-	/* 	var realEstate models.RealEstate */
-	var realEstateDto fiber.Map
-	if err := c.BodyParser(&realEstateDto); err != nil {
-		return err
+	//* ===== SAVE IMG IN CLOUDINARY =====
+	formHeader, err := c.FormFile("image")
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(
+			fiber.Map{
+				"StatusCode": http.StatusInternalServerError,
+				"Message":    "error",
+				"Data":       "Select a file to upload",
+			})
 	}
 
-	/* errors := ValidateStructRE(realEstateDto)
-	if errors != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": errors,
+	formFile, err := formHeader.Open()
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(
+			fiber.Map{
+				"StatusCode": http.StatusInternalServerError,
+				"Message":    "error",
+				"Data":       err.Error(),
+			})
+	}
+
+	url, state := helper.Upload(formFile)
+
+	if state {
+		return c.JSON(fiber.Map{
+			"message": url,
 		})
-	} */
-
-	list := realEstateDto["photos"].([]interface{})
-	photos := make([]models.Photo, len(list))
-
-	for i, photosId := range list {
-		id, _ := strconv.Atoi(photosId.(string))
-		photos[i] = models.Photo{
-			Id: uint(id),
-		}
 	}
 
-	fmt.Println(realEstateDto)
+	return c.JSON(url)
 
-	realEstate := models.RealEstate{
-		Title:            realEstateDto["title"].(string),
-		Description:      realEstateDto["description"].(string),
-		AmountBedroom:    int(realEstateDto["amount_bedroom"].(float64)),
-		Price:            int(realEstateDto["price"].(float64)),
-		AmountBathroom:   int(realEstateDto["amount_bathroom"].(float64)),
-		SquareMeter:      int(realEstateDto["square_meter"].(float64)),
-		UserId:           int(realEstateDto["user_id"].(float64)),
-		TypeRealEstateId: int(realEstateDto["type_real_estate_id"].(float64)),
-		Photos:           photos,
-	}
-
-	database.DB.Create(&realEstate)
-	database.DB.Model(&realEstate).Association("User").Find(&realEstate.User)
-	database.DB.Model(&realEstate).Association("TypeRealState").Find(&realEstate.TypeRealEstate)
-	database.DB.Model(&realEstate).Association("Photos").Find(&realEstate.Photos)
-	return c.JSON(realEstate)
 }

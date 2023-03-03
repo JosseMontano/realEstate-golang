@@ -45,6 +45,7 @@ func Setup(app *fiber.App) {
 
 
 
+
 	app.Post("/api/realEstate", controllers.CreateRE)
 
 }
