@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/JosseMontano/estateInTheCloud/database"
 	"github.com/JosseMontano/estateInTheCloud/routes"
@@ -22,8 +22,8 @@ func main() {
 
 	routes.Setup(app)
 
-	port := utils.DotEnvVariable("PORT_SERVER")
+	port := utils.DotEnvVariable("PORT")
 
-	fmt.Print(port)
-	app.Listen(port)
+	log.Fatal(app.Listen("0.0.0.0" + port))
+	//log.Fatal(app.Listen(port))
 }
