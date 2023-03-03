@@ -15,7 +15,7 @@ func Connect() {
 	user := utils.DotEnvVariable("USER")
 	password := utils.DotEnvVariable("PASSWORD")
 	dbname := utils.DotEnvVariable("DBNAME")
-	port := utils.DotEnvVariable("PORT")
+	port := utils.DotEnvVariable("PORT_DB")
  
 	DSN := "host=" + host + " user=" + user + " password=" + password + " dbname=" + dbname + " port=" + port
 

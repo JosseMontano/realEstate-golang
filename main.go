@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/JosseMontano/estateInTheCloud/database"
 	"github.com/JosseMontano/estateInTheCloud/routes"
+	"github.com/JosseMontano/estateInTheCloud/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
@@ -19,5 +20,10 @@ func main() {
 
 	routes.Setup(app)
 
-	app.Listen(":4000")
+	port := utils.DotEnvVariable("PORT_SERVER")
+
+	if port == "" {
+		port ="4000"
+	}
+	app.Listen(port)
 }
