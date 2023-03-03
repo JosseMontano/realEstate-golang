@@ -24,9 +24,6 @@ func main() {
 
 	port := utils.DotEnvVariable("PORT_SERVER")
 
-	if port == "" {
-		port ="127.0.0.1:4000"
-	}
 	fmt.Print(port)
 	app.Listen(port)
 }
