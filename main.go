@@ -17,6 +17,7 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
+		AllowOrigins:     "https://realestate-c70dc.web.app",
 		AllowCredentials: true,
 	}))
 
