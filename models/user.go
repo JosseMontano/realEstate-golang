@@ -1,14 +1,15 @@
 package models
 
 type User struct {
-	Id              uint   `json:"id"`
-	UserName        string `json:"user_name" validate:"required,min=3,max=32"`
-	CellphoneNumber string `json:"cellphone_number" validate:"required"`
-	Email           string `json:"email" validate:"required,email" gorm:"unique"`
-	Password        []byte `json:"password" validate:"required"`
-	Qualification   int    `json:"qualification"`
-	UrlPhoto        string `json:"url_photo"`
-	CodeRecuperation string `json:"code_recuperation"`
+	Id                 uint   `json:"id"`
+	UserName           string `json:"user_name" validate:"required,min=3,max=32"`
+	CellphoneNumber    string `json:"cellphone_number" validate:"required"`
+	Email              string `json:"email" validate:"required,email" gorm:"unique"`
+	Password           []byte `json:"password" validate:"required"`
+	Qualification      int    `json:"qualification"`
+	UrlPhoto           string `json:"url_photo"`
+	CodeRecuperation   string `json:"code_recuperation"`
+	FavoriteRealEstate FavoriteRealEstate `json:"favorite_real_estate"`
 }
 
 type ErrorResponse struct {

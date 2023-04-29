@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-
 	"github.com/JosseMontano/estateInTheCloud/database"
 	"github.com/JosseMontano/estateInTheCloud/routes"
 	"github.com/JosseMontano/estateInTheCloud/utils"
@@ -15,9 +14,9 @@ func main() {
 	database.Connect()
 
 	app := fiber.New()
-
+	//https://realestate-c70dc.web.app
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "https://realestate-c70dc.web.app",
+		AllowOrigins:     "*",
 		AllowCredentials: true,
 	}))
 
@@ -25,6 +24,6 @@ func main() {
 
 	port := utils.DotEnvVariable("PORT")
 
-	log.Fatal(app.Listen("0.0.0.0:" + port))
-	//log.Fatal(app.Listen(port))
+	/* log.Fatal(app.Listen("0.0.0.0:" + port)) */
+	log.Fatal(app.Listen(port))
 }

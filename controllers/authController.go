@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"fmt"
-	"time"
 	"github.com/JosseMontano/estateInTheCloud/database"
 	"github.com/JosseMontano/estateInTheCloud/middleware"
 	"github.com/JosseMontano/estateInTheCloud/models"
@@ -12,6 +11,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/gomail.v2"
+	"time"
 )
 
 var validate = validator.New()
@@ -105,21 +105,22 @@ func SingIn(c *fiber.Ctx) error {
 		})
 	}
 
-	timeExp := time.Now().Add(24 * time.Hour)
+	if err := bcrypt.CompareHashAndPassword(user.Password, []byte(data["password"])); err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"message": "incorrect password",
+		})
+	}
+
+
+	timeExp := time.Now().Add(720 * time.Hour) // 720 24 * 30
 	tokenString, err := middleware.GenerateJwt(user, timeExp)
 
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": err.Error(),
+		})
 	}
-	/*
-		cookie := fiber.Cookie{
-			Name:     "jwt",
-			Value:    tokenString,
-			Expires:  timeExp,
-			HTTPOnly: true,
-		}
-
-		c.Cookie(&cookie) */
 
 	return c.JSON(fiber.Map{
 		"auth":  true,

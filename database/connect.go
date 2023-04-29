@@ -32,4 +32,5 @@ func Connect() {
 	database.AutoMigrate(models.Photo{})
 	database.AutoMigrate(models.RealEstate{})
 	database.AutoMigrate(models.Question{})
+	database.AutoMigrate(models.FavoriteRealEstate{})
 }
