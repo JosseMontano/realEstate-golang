@@ -42,13 +42,6 @@ func Register(c *fiber.Ctx) error {
 		return err
 	}
 
-	/* 	if data["password"] != data["password_confirm"] {
-		c.Status(400)
-		return c.JSON(fiber.Map{
-			"message": "password do not match",
-		})
-	} */
-
 	password, _ := bcrypt.GenerateFromPassword([]byte(data["password"]), 14)
 
 	user := models.User{
